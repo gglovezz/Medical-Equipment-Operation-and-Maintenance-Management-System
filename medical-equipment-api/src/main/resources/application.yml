@@ -1,0 +1,73 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: medical-equipment-api
+
+  # H2 内嵌数据库（无需外部 MySQL，开箱即用）
+  datasource:
+    url: jdbc:h2:mem:equipment;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # 只用 schema.sql 初始化表结构，数据由 Java 代码初始化
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      encoding: UTF-8
+      continue-on-error: true
+
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+  # 静态资源映射（让上传的图片可通过 URL 访问）
+  web:
+    resources:
+      static-locations: file:${upload.path}, classpath:/static/
+
+# MyBatis-Plus
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+# JWT 配置
+jwt:
+  secret: hospital-equipment-management-system-jwt-secret-key-2026-very-long-secret
+  expiration: 7200000  # 2小时（毫秒）
+
+# 文件上传路径
+upload:
+  path: /workspace/uploads/
+
+# Knife4j
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+logging:
+  level:
+    com.hospital.equipment: debug
+    org.springframework.security: info
